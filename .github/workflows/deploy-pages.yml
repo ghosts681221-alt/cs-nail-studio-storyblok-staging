@@ -10,6 +10,11 @@ on:
         required: true
         default: false
         type: boolean
+      story_slug:
+        description: "Published Storyblok slug to fetch when fetch_storyblok is enabled"
+        required: false
+        default: "staging-test"
+        type: string
 
 permissions:
   contents: read
@@ -43,6 +48,7 @@ jobs:
           pnpm build
         env:
           FETCH_STORYBLOK: ${{ inputs.fetch_storyblok || 'false' }}
+          STORYBLOK_STORY_SLUG: ${{ inputs.story_slug || 'staging-test' }}
           STORYBLOK_DELIVERY_TOKEN: ${{ secrets.STORYBLOK_DELIVERY_TOKEN }}
       - uses: actions/configure-pages@v5
       - uses: actions/upload-pages-artifact@v3

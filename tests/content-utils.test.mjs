@@ -1,6 +1,6 @@
 import assert from "node:assert/strict";
 import test from "node:test";
-import { escapeHtml, extractContent } from "../scripts/content-utils.mjs";
+import { escapeHtml, extractContent, normalizeStorySlug } from "../scripts/content-utils.mjs";
 
 test("extractContent only returns Storyblok Lookbook and service blocks in display order", () => {
   const result = extractContent({
@@ -20,4 +20,10 @@ test("extractContent only returns Storyblok Lookbook and service blocks in displ
 
 test("escapeHtml prevents CMS text from becoming markup", () => {
   assert.equal(escapeHtml('<img src=x onerror="bad">'), "&lt;img src=x onerror=&quot;bad&quot;&gt;");
+});
+
+test("normalizeStorySlug defaults to the isolated staging story and rejects unsafe paths", () => {
+  assert.equal(normalizeStorySlug(), "staging-test");
+  assert.equal(normalizeStorySlug(" /campaigns/staging-test/ "), "campaigns/staging-test");
+  assert.throws(() => normalizeStorySlug("https://example.com"), /unsupported characters/);
 });

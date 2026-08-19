@@ -1,12 +1,15 @@
 import { mkdir, writeFile } from "node:fs/promises";
+import { normalizeStorySlug } from "./content-utils.mjs";
 
 const token = process.env.STORYBLOK_DELIVERY_TOKEN;
+const storySlug = normalizeStorySlug(process.env.STORYBLOK_STORY_SLUG);
 
 if (!token) {
   throw new Error("Missing STORYBLOK_DELIVERY_TOKEN. Use a Storyblok delivery token, never a management token.");
 }
 
-const url = new URL("https://api.storyblok.com/v2/cdn/stories/home");
+const encodedSlug = storySlug.split("/").map(encodeURIComponent).join("/");
+const url = new URL(`https://api.storyblok.com/v2/cdn/stories/${encodedSlug}`);
 url.searchParams.set("token", token);
 url.searchParams.set("version", "published");
 

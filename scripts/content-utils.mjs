@@ -7,6 +7,19 @@ export function escapeHtml(value) {
     .replaceAll("'", "&#039;");
 }
 
+export function normalizeStorySlug(value, fallback = "staging-test") {
+  const slug = String(value ?? "")
+    .trim()
+    .replace(/^\/+|\/+$/g, "");
+
+  if (!slug) return fallback;
+  if (!/^[A-Za-z0-9][A-Za-z0-9/_-]*$/.test(slug)) {
+    throw new Error("Storyblok story slug contains unsupported characters");
+  }
+
+  return slug;
+}
+
 export function extractContent(content) {
   const body = Array.isArray(content?.body) ? content.body : [];
   const nails = body
